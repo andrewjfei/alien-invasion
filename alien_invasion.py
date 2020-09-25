@@ -13,8 +13,16 @@ class AlienInvasion:
         pygame.init()
         self.settings = Settings()
 
+        # Uncomment code to run Alien Invasion in full screen mode.
+        # self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        # self.settings.screen_width = self.screen.get_rect().width
+        # self.settings.screen_height = self.screen.get_rect().height
+
+        # Comment line out when trying to run Alien Invasion in full screen
+        # mode.
         self.screen = pygame.display.set_mode(
             (self.settings.screen_width, self.settings.screen_height))
+
         pygame.display.set_caption("Alien Invasion")
 
         self.spaceship = Spaceship(self)
@@ -31,18 +39,28 @@ class AlienInvasion:
             if event.type == pygame.QUIT:
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    # Move the spaceship to the right.
-                    self.spaceship.moving_right = True
-                elif event.key == pygame.K_LEFT:
-                    # Move the spaceship to the left.
-                    self.spaceship.moving_left = True
+                self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_RIGHT:
-                    self.spaceship.moving_right = False
-                elif event.key == pygame.K_LEFT:
-                    self.spaceship.moving_left = False
+                self._check_keyup_events(event)
+                
 
+    def _check_keydown_events(self, event):
+        """Respond to keypresses."""
+        if event.key == pygame.K_RIGHT:
+            # Move the spaceship to the right.
+            self.spaceship.moving_right = True
+        elif event.key == pygame.K_LEFT:
+            # Move the spaceship to the left.
+            self.spaceship.moving_left = True
+        elif event.key == pygame.K_q:
+            sys.exit()
+
+    def _check_keyup_events(self, event):
+        """Respond to key releases."""
+        if event.key == pygame.K_RIGHT:
+            self.spaceship.moving_right = False
+        elif event.key == pygame.K_LEFT:
+            self.spaceship.moving_left = False
 
     def _update_screen(self):
         # Update images on the screen, and flip to the new screen.
