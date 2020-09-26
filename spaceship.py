@@ -13,8 +13,11 @@ class Spaceship:
         self.image = pygame.image.load('images/spaceship.bmp')
         self.rect = self.image.get_rect()
 
-        # Start each new ship at the bottom center of the screen.
+        # Start each new spaceship at the bottom center of the screen.
         self.rect.midbottom = self.screen_rect.midbottom
+
+        # Make sure spaceship bottom is not touching the bottom of the screen.
+        self.rect.y = self.rect.y - 10
 
         # Store a decimal value for the spaceship's horizontal postion.
         self.x = float(self.rect.x)
