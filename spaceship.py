@@ -17,7 +17,7 @@ class Spaceship:
         self.rect.midbottom = self.screen_rect.midbottom
 
         # Make sure spaceship bottom is not touching the bottom of the screen.
-        self.rect.y = self.rect.y - 10
+        self.rect.y = self.rect.y - self.rect.height
 
         # Store a decimal value for the spaceship's horizontal postion.
         self.x = float(self.rect.x)
