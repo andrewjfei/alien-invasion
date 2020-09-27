@@ -13,14 +13,7 @@ class Spaceship:
         self.image = pygame.image.load('images/spaceship.bmp')
         self.rect = self.image.get_rect()
 
-        # Start each new spaceship at the bottom center of the screen.
-        self.rect.midbottom = self.screen_rect.midbottom
-
-        # Make sure spaceship bottom is not touching the bottom of the screen.
-        self.rect.y = self.rect.y - self.rect.height
-
-        # Store a decimal value for the spaceship's horizontal postion.
-        self.x = float(self.rect.x)
+        self.center_ship()
 
         # Movement flag.
         self.moving_right = False
@@ -40,4 +33,15 @@ class Spaceship:
     def blitme(self):
         """Draw the spaceship at its current location."""
         self.screen.blit(self.image, self.rect)
+
+    def center_ship(self):
+        """Center the ship on the screen."""
+        # Start each new spaceship at the bottom center of the screen.
+        self.rect.midbottom = self.screen_rect.midbottom
+
+        # Make sure spaceship is not touching the bottom of the screen.
+        self.rect.y = self.rect.y - self.rect.height
+
+        # Store a decimal value for the spaceship's horizontal postion.
+        self.x = float(self.rect.x)
         
