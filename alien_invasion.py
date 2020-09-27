@@ -69,8 +69,25 @@ class AlienInvasion:
 
     def _check_play_button(self, mouse_pos):
         """Start a new game when the player clicks Play."""
-        if self.play_button.rect.collidepoint(mouse_pos):
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.stats.game_active:
+            # Reset the game settings.
+            self.settings.initialise_dynamic_settings
+
+            # Reset game statistics.
+            self.stats.reset_stats()
             self.stats.game_active = True
+
+            # Get rid of any remaining aliens and bullets.
+            self.aliens.empty()
+            self.bullets.empty()
+
+            # Create a new fleet and center the spaceship.
+            self._create_fleet()
+            self.spaceship.center_spaceship()
+
+            # Hide the mouse cursor.
+            pygame.mouse.set_visible(False)
 
     def _check_keydown_events(self, event):
         """Respond to keypresses."""
@@ -165,12 +182,19 @@ class AlienInvasion:
             # Destroy existing bullets and create new fleet.
             self.bullets.empty()
             self._create_fleet()
+            self.settings.increase_speed()
 
     def _spaceship_hit(self):
         """Respond to the spaceship being hit by an alien."""
         if self.stats.ships_left > 0:
             # Decrement ships_left.
             self.stats.ships_left -= 1
+
+            # Check to see if the has anymore spaceships left.
+            if self.stats.ships_left <= 0:
+                 self.stats.game_active = False
+                 pygame.mouse.set_visible(True)
+                 return
 
             # Get rid of any remaining aliens and bullets.
             self.aliens.empty()
@@ -179,11 +203,6 @@ class AlienInvasion:
             # Create a new fleet and center the spaceship.
             self._create_fleet()
             self.spaceship.center_spaceship()
-
-            # Check to see if the has anymore spaceships left.
-            if self.stats.ships_left <= 0:
-                 self.stats.game_active = False
-                 return
 
             # Pause to allow player to get ready.
             sleep(0.5)
