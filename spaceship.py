@@ -13,7 +13,7 @@ class Spaceship:
         self.image = pygame.image.load('images/spaceship.bmp')
         self.rect = self.image.get_rect()
 
-        self.center_ship()
+        self.center_spaceship()
 
         # Movement flag.
         self.moving_right = False
@@ -34,7 +34,7 @@ class Spaceship:
         """Draw the spaceship at its current location."""
         self.screen.blit(self.image, self.rect)
 
-    def center_ship(self):
+    def center_spaceship(self):
         """Center the ship on the screen."""
         # Start each new spaceship at the bottom center of the screen.
         self.rect.midbottom = self.screen_rect.midbottom
