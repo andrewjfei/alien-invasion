@@ -9,7 +9,7 @@ class Button:
         self.screen_rect = self.screen.get_rect()
 
         # Load the play button image and set its rect attribute."""
-        self.play_button_image = pygame.image.load('images/play_button.bmp')
+        self.play_button_image = pygame.image.load('assets/images/play_button.bmp')
         self.rect = self.play_button_image.get_rect()
         self.rect.center = self.screen_rect.center
 

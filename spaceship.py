@@ -10,7 +10,7 @@ class Spaceship:
         self.screen_rect = ai_game.screen.get_rect()
 
         # Load the ship image and get its rect.
-        self.image = pygame.image.load('images/spaceship.bmp')
+        self.image = pygame.image.load('assets/images/spaceship.bmp')
         self.rect = self.image.get_rect()
 
         self.center_spaceship()
