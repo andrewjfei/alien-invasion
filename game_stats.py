@@ -14,9 +14,10 @@ class GameStats:
 
         filename = 'high_score.txt'
 
-        with open(filename) as file:
+        with open(filename, 'r+') as file:
             high_score_str = file.read()
-            self.high_score = int(high_score_str)
+            if high_score_str:
+                self.high_score = int(high_score_str)
 
     def reset_stats(self):
         """Initialise statistics that can change during the game."""
