@@ -22,9 +22,9 @@ class Spaceship:
     def update(self):
         """Update the spaceship's position based on the movement flag."""
         # Update ths spaceship;s x value, not the rect.
-        if self.moving_right and self.rect.right < self.screen_rect.right:
+        if self.moving_right and self.rect.right < self.screen_rect.right - 20:
             self.x += self.settings.spaceship_speed
-        if self.moving_left and self.rect.left > 0:
+        if self.moving_left and self.rect.left > 20:
             self.x -= self.settings.spaceship_speed
 
         # Update rect object from self.x.
@@ -40,7 +40,7 @@ class Spaceship:
         self.rect.midbottom = self.screen_rect.midbottom
 
         # Make sure spaceship is not touching the bottom of the screen.
-        self.rect.y = self.rect.y - self.rect.height
+        self.rect.y = self.rect.y - 20
 
         # Store a decimal value for the spaceship's horizontal postion.
         self.x = float(self.rect.x)

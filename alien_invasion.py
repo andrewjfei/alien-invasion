@@ -81,6 +81,7 @@ class AlienInvasion:
             self.stats.game_active = True
             self.sb.prep_score()
             self.sb.prep_level()
+            self.sb.prep_spaceships()
 
             # Get rid of any remaining aliens and bullets.
             self.aliens.empty()
@@ -142,7 +143,7 @@ class AlienInvasion:
         alien.x = alien_width + ((alien_width + alien_spacing_x) * 
             alien_number)
         alien.rect.x = alien.x
-        alien.rect.y = alien_height + (2 * alien_height * row_number)
+        alien.rect.y = alien_height + 50 + (2 * alien_height * row_number)
         self.aliens.add(alien)
 
     def _check_fleet_edges(self):
@@ -200,12 +201,13 @@ class AlienInvasion:
 
     def _spaceship_hit(self):
         """Respond to the spaceship being hit by an alien."""
-        if self.stats.ships_left > 0:
-            # Decrement ships_left.
-            self.stats.ships_left -= 1
+        if self.stats.spaceships_left > 0:
+            # Decrement spaceships_left, and update scoreboard.
+            self.stats.spaceships_left -= 1
+            self.sb.prep_spaceships()
 
             # Check to see if the has anymore spaceships left.
-            if self.stats.ships_left <= 0:
+            if self.stats.spaceships_left <= 0:
                  self.stats.game_active = False
                  pygame.mouse.set_visible(True)
                  return
@@ -225,7 +227,7 @@ class AlienInvasion:
         """Check if any aliens have reached the bottom of the screen."""
         screen_rect = self.screen.get_rect()
         for alien in self.aliens.sprites():
-            if alien.rect.bottom >= screen_rect.bottom:
+            if alien.rect.bottom >= screen_rect.bottom - 20:
                 self._spaceship_hit()
                 break
 
