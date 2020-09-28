@@ -90,5 +90,10 @@ class Scoreboard:
     def check_high_score(self):
         """Check to see if there's a new high score."""
         if self.stats.score > self.stats.high_score:
+            filename = 'high_score.txt'
+
+            with open(filename, 'w') as file:
+                file.write(str(self.stats.score))
+
             self.stats.high_score = self.stats.score
             self.prep_high_score()

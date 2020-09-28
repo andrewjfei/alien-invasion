@@ -12,6 +12,12 @@ class GameStats:
         # High score should never be reset.
         self.high_score = 0
 
+        filename = 'high_score.txt'
+
+        with open(filename) as file:
+            high_score_str = file.read()
+            self.high_score = int(high_score_str)
+
     def reset_stats(self):
         """Initialise statistics that can change during the game."""
         self.spaceships_left = self.settings.ship_limit
