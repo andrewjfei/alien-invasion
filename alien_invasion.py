@@ -41,7 +41,7 @@ class AlienInvasion:
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
 
-        self._create_fleet()
+        self._create_wave()
 
         # Create game title.
         self.title = GameTitle(self)
@@ -108,15 +108,15 @@ class AlienInvasion:
             self.stats.reset_stats()
             self.stats.game_active = True
             self.sb.prep_score()
-            self.sb.prep_level()
+            self.sb.prep_wave()
             self.sb.prep_spaceships()
 
             # Get rid of any remaining aliens and bullets.
             self.aliens.empty()
             self.bullets.empty()
 
-            # Create a new fleet and center the spaceship.
-            self._create_fleet()
+            # Create a new wave and center the spaceship.
+            self._create_wave()
             self.spaceship.center_spaceship()
 
             # Hide the mouse cursor.
@@ -183,8 +183,8 @@ class AlienInvasion:
         elif event.key == pygame.K_LEFT:
             self.spaceship.moving_left = False
 
-    def _create_fleet(self):
-        """Create the fleet of aliens."""
+    def _create_wave(self):
+        """Create the wave of aliens."""
         # Create an alien and find the number of aliens in a row.
         # Determine equal spacing between all aliens in the row.
         alien = Alien(self)
@@ -199,7 +199,7 @@ class AlienInvasion:
         avialable_space_y = self.settings.screen_height - ((5 * alien_height) + spaceship_height)
         number_of_rows = avialable_space_y // (2 * alien_height)
 
-        # Create the full fleet of aliens.
+        # Create the full wave of aliens.
         for row_number in range(number_of_rows):
             for alien_number in range(number_of_aliens_x):
                 self._create_alien(alien_number, alien_spacing_x, row_number)
@@ -215,24 +215,25 @@ class AlienInvasion:
         alien.rect.y = alien_height + 50 + (2 * alien_height * row_number)
         self.aliens.add(alien)
 
-    def _check_fleet_edges(self):
+    def _check_wave_edges(self):
         """Respond appropriately if any aliens have reached the edge."""
         for alien in self.aliens.sprites():
             if alien.check_edges():
-                self._change_fleet_direction()
+                self._change_wave_direction()
                 break
 
-    def _change_fleet_direction(self):
-        """Drop the entire fleet and change the fleet's direction."""
+    def _change_wave_direction(self):
+        """Drop the entire wave and change the wave's direction."""
         for alien in self.aliens.sprites():
-            alien.rect.y += self.settings.fleet_drop_speed
-        self.settings.fleet_direction *= -1
+            alien.rect.y += self.settings.wave_drop_speed
+        self.settings.wave_direction *= -1
 
     def _fire_bullet(self):
         """Create a new bullet and add it to the bullets group."""
         if len(self.bullets) < self.settings.bullets_allowed:
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
+            self.stats.bullets_fired += 1
 
     def _update_bullets(self):
         """Update position of bullets and get rid of old bullets."""
@@ -255,18 +256,19 @@ class AlienInvasion:
         if collisions:
             for aliens in collisions.values():
                 self.stats.score += self.settings.alien_points * len(aliens)
+                self.stats.aliens_destroyed += len(aliens)
             self.sb.prep_score()
             self.sb.check_high_score()
 
         if not self.aliens:
-            # Destroy existing bullets and create new fleet.
+            # Destroy existing bullets and create new wave.
             self.bullets.empty()
-            self._create_fleet()
+            self._create_wave()
             self.settings.increase_speed()
 
-            # Increase level.
-            self.stats.level += 1
-            self.sb.prep_level()
+            # Increase wave.
+            self.stats.wave += 1
+            self.sb.prep_wave()
 
     def _spaceship_hit(self):
         """Respond to the spaceship being hit by an alien."""
@@ -285,8 +287,8 @@ class AlienInvasion:
             self.aliens.empty()
             self.bullets.empty()
 
-            # Create a new fleet and center the spaceship.
-            self._create_fleet()
+            # Create a new wave and center the spaceship.
+            self._create_wave()
             self.spaceship.center_spaceship()
 
             # Pause to allow player to get ready.
@@ -302,10 +304,10 @@ class AlienInvasion:
 
     def _update_aliens(self):
         """
-        Check if the fleet is at an edge, then update the positions of all 
-        aliens in the fleet.
+        Check if the wave is at an edge, then update the positions of all 
+        aliens in the wave.
         """
-        self._check_fleet_edges()
+        self._check_wave_edges()
         self.aliens.update()
 
         # Look for alien-ship collisions.

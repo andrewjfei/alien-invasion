@@ -22,7 +22,7 @@ class Scoreboard:
         # Prepare the initial score images.
         self.prep_score()
         self.prep_high_score()
-        self.prep_level()
+        self.prep_wave()
         self.prep_spaceships()
 
     def prep_score(self):
@@ -57,16 +57,16 @@ class Scoreboard:
         self.high_score_rect.centerx = self.screen_rect.centerx
         self.high_score_rect.top = self.high_score_text_rect.bottom + 6
 
-    def prep_level(self):
-        """Turn the level into a rendered image."""
-        level_str = "Wave " + str(self.stats.level)
-        self.level_image = self.medium_font.render(level_str, True, 
+    def prep_wave(self):
+        """Turn the wave into a rendered image."""
+        wave_str = "Wave " + str(self.stats.wave)
+        self.wave_image = self.medium_font.render(wave_str, True, 
             self.settings.text_colour, self.settings.bg_colour)
 
-        # Position the level below the score.
-        self.level_rect = self.level_image.get_rect()
-        self.level_rect.right = self.score_rect.right
-        self.level_rect.top = self.score_rect.bottom + 10
+        # Position the wave below the score.
+        self.wave_rect = self.wave_image.get_rect()
+        self.wave_rect.right = self.score_rect.right
+        self.wave_rect.top = self.score_rect.bottom + 10
 
     def prep_spaceships(self):
         """Show how many ships are left."""
@@ -79,11 +79,11 @@ class Scoreboard:
             self.spaceships.add(spaceship)
 
     def show_score(self):
-        """Draw score and level to the screen."""
+        """Draw score and wave to the screen."""
         self.screen.blit(self.score_image, self.score_rect)
         self.screen.blit(self.high_score_text_image, self.high_score_text_rect)
         self.screen.blit(self.high_score_image, self.high_score_rect)
-        self.screen.blit(self.level_image, self.level_rect)
+        self.screen.blit(self.wave_image, self.wave_rect)
         self.spaceships.draw(self.screen)
 
     def check_high_score(self):

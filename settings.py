@@ -22,7 +22,7 @@ class Settings:
         self.bullets_allowed = 3
 
         # Alien settings.
-        self.fleet_drop_speed = 5
+        self.wave_drop_speed = 5
 
         # How quickly the game speeds up.
         self.speedup_scale = 1.1
@@ -39,8 +39,8 @@ class Settings:
         self.bullet_speed = 3.0
         self.alien_speed = 0.5
 
-        # Fleet direction of 1 represents right, -1 represents left.
-        self.fleet_direction = 1
+        # Wave direction of 1 represents right, -1 represents left.
+        self.wave_direction = 1
 
         # Scoring
         self.alien_points = 50

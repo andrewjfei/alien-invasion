@@ -30,5 +30,17 @@ class GameStats:
         """Initialise statistics that can change during the game."""
         self.spaceships_left = self.settings.ship_limit
         self.score = 0
-        self.level = 1
+        self.wave = 1
+        self.aliens_destroyed = 0
+        self.bullets_fired = 0
+
+    def _prep_stats(self):
+        """Pepare stats text."""
+        self._prep_game_over_text()
+        self._prep_bullets_fired()
+        self._prep_aliens_destroyed()
+        self._prep_wave()
+
+    def show_stats(self):
+        """Draws the users score for the game onto the screen."""
         

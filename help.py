@@ -15,7 +15,7 @@ class Help:
         self.medium_font = pygame.font.Font('assets/fonts/slkscre.ttf', 24)
         self.large_font = pygame.font.Font('assets/fonts/slkscre.ttf', 36)
 
-        # Prepare how to play text.
+        # Prepare help text.
         self._prep_help_title()
         self._prep_help_text()
         self._prep_how_to_title()
@@ -70,7 +70,7 @@ class Help:
             '2. Press the space key to fire a bullet.',
             '3. Only 3 bullets can be active at a time.',
             '4. If a bullet hits an alien, the alien is destroyed.',
-            '5. When an entire fleet is destroyed, a more advanced fleet '
+            '5. When an entire wave is destroyed, a more advanced wave '
             'appears.',
             '6. If an alien reaches the spaceship the spaceship is destroyed.',
             '7. If an alien reaches the bottom of the screen the spaceship is ' 
