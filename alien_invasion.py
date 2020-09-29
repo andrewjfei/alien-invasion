@@ -50,11 +50,17 @@ class AlienInvasion:
             pygame.image.load('assets/images/play_button.bmp'))
         self.help_button = Button(self, 
             pygame.image.load('assets/images/help_button.bmp'))
+        self.quit_button = Button(self, 
+            pygame.image.load('assets/images/quit_button.bmp'))
         self.resume_button = Button(self, 
             pygame.image.load('assets/images/resume_button.bmp'))
+        self.back_button = Button(self, 
+            pygame.image.load('assets/images/back_button.bmp'))
 
         # Give spacing between buttons.
         self.help_button.rect.y += self.help_button.rect.height + 20
+        self.quit_button.rect.y += (self.help_button.rect.height + 20) * 2
+        self.back_button.rect.y += self.resume_button.rect.height + 20
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -80,7 +86,9 @@ class AlienInvasion:
             elif event.type == pygame.MOUSEBUTTONUP:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_play_button(mouse_pos)
+                self._check_quit_button(mouse_pos)
                 self._check_resume_button(mouse_pos)
+                self._check_back_button(mouse_pos)
 
     def _check_play_button(self, mouse_pos):
         """Start a new game when the player clicks Play."""
@@ -108,6 +116,14 @@ class AlienInvasion:
             # Hide the mouse cursor.
             pygame.mouse.set_visible(False)
 
+    def _check_quit_button(self, mouse_pos):
+        """Start a new game when the player clicks Play."""
+        button_clicked = self.quit_button.rect.collidepoint(mouse_pos)
+        if (button_clicked and not self.stats.game_active and 
+            not self.stats.game_paused):
+            # Exit the game.
+            sys.exit()
+
     def _check_resume_button(self, mouse_pos):
         """Start a new game when the player clicks Play."""
         button_clicked = self.resume_button.rect.collidepoint(mouse_pos)
@@ -115,6 +131,14 @@ class AlienInvasion:
             self.stats.game_paused = False
             # Hide the mouse cursor.
             pygame.mouse.set_visible(False)
+
+    def _check_back_button(self, mouse_pos):
+        """Start a new game when the player clicks Play."""
+        button_clicked = self.back_button.rect.collidepoint(mouse_pos)
+        if button_clicked and self.stats.game_active and self.stats.game_paused:
+            self.stats.game_active = False
+            self.stats.game_paused = False
+
 
     def _check_keydown_events(self, event):
         """Respond to keypresses."""
@@ -291,10 +315,12 @@ class AlienInvasion:
             self.title.draw_title()
             self.play_button.draw_button()
             self.help_button.draw_button()
+            self.quit_button.draw_button()
 
         # Draw the resume button if the game is paused.
         if self.stats.game_paused:
             self.resume_button.draw_button()
+            self.back_button.draw_button()
 
         # Make the most recently drawn screen visible.
         pygame.display.flip()
