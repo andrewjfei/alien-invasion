@@ -7,7 +7,7 @@ from settings import Settings
 from game_stats import GameStats
 from scoreboard import Scoreboard
 from game_title import GameTitle
-from how_to_play import HowToPlay
+from help import Help
 from button import Button
 from spaceship import Spaceship
 from bullet import Bullet
@@ -47,7 +47,7 @@ class AlienInvasion:
         self.title = GameTitle(self)
 
         # Create help text.
-        self.help = HowToPlay(self)
+        self.help = Help(self)
 
         # Make buttons.
         self.play_button = Button(self, 
@@ -349,7 +349,8 @@ class AlienInvasion:
             self.stats.help_active):
             self.help.show_help()
 
-            self.back_button.rect.y = self.help.text_rects[-1].bottom + 50
+            self.back_button.rect.y = (self.help.how_to_text_rects[-1].bottom + 
+                50)
             self.back_button.draw_button()
 
         # Make the most recently drawn screen visible.
