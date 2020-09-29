@@ -12,6 +12,9 @@ class GameStats:
         # Make sure game is initially paused (e.g. not running).
         self.game_paused = False
 
+        # Make sure help screen is initally not open.
+        self.help_active = False
+
         # High score should never be reset.
         self.high_score = 0
 
