@@ -3,10 +3,14 @@ class Settings:
 
     def __init__(self):
         """Initialise the game's static settings."""
+        # Game settings.
+        self.title = 'Alien Invasion'
+
         # Screen settings.
         self.screen_width = 1200
         self.screen_height = 800
         self.bg_colour = (30, 30, 30)
+        self.text_colour = (230, 230, 230)
 
         # Spaceship settings.
         self.ship_limit = 3

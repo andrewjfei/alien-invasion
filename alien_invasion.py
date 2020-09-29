@@ -6,6 +6,7 @@ import pygame
 from settings import Settings
 from game_stats import GameStats
 from scoreboard import Scoreboard
+from game_title import GameTitle
 from button import Button
 from spaceship import Spaceship
 from bullet import Bullet
@@ -41,6 +42,9 @@ class AlienInvasion:
 
         self._create_fleet()
 
+        # Create game title.
+        self.title = GameTitle(self)
+
         # Make buttons.
         self.play_button = Button(self, 
             pygame.image.load('assets/images/play_button.bmp'))
@@ -48,6 +52,9 @@ class AlienInvasion:
             pygame.image.load('assets/images/help_button.bmp'))
         self.resume_button = Button(self, 
             pygame.image.load('assets/images/resume_button.bmp'))
+
+        # Give spacing between buttons.
+        self.help_button.rect.y += self.help_button.rect.height + 20
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -268,17 +275,22 @@ class AlienInvasion:
     def _update_screen(self):
         # Update images on the screen, and flip to the new screen.
         self.screen.fill(self.settings.bg_colour)
-        self.spaceship.blitme()
-        for bullet in self.bullets.sprites():
-            bullet.draw_bullet()
-        self.aliens.draw(self.screen)
 
-        # Draw the score information.
-        self.sb.show_score()
+        # Draw aliens, ship and score information only if game is active.
+        if self.stats.game_active:
+            self.spaceship.blitme()
+            for bullet in self.bullets.sprites():
+                bullet.draw_bullet()
+            self.aliens.draw(self.screen)
+
+            # Draw the score information.
+            self.sb.show_score()
 
         # Draw the play button if the game is invactive.
         if not self.stats.game_active:
+            self.title.draw_title()
             self.play_button.draw_button()
+            self.help_button.draw_button()
 
         # Draw the resume button if the game is paused.
         if self.stats.game_paused:
