@@ -13,6 +13,9 @@ class GameStats:
         # Start Alien Invasion in an inactive state.
         self.game_active = False
 
+        # Set incoming wave of aliens initially to false.
+        self.incoming_wave = False
+
         # Make sure game is initially paused (e.g. not running).
         self.game_paused = False
 
@@ -88,7 +91,10 @@ class GameStats:
 
     def _prep_accuracy(self):
         """Show how many aliens the user destroyed during the game."""
-        accuracy = int((self.aliens_destroyed / self.bullets_fired) * 100)
+        if self.bullets_fired != 0:
+            accuracy = int((self.aliens_destroyed / self.bullets_fired) * 100)
+        else:
+            accuracy = 0
         accuracy_str = f'Accuracy: {accuracy}%'
         self.accuracy_image = self.small_font.render(
             accuracy_str, True, self.settings.text_colour, 

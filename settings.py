@@ -13,7 +13,7 @@ class Settings:
         self.text_colour = (230, 230, 230)
 
         # Spaceship settings.
-        self.ship_limit = 1
+        self.ship_limit = 2
 
         # Bullet settings.
         self.bullet_width = 3
