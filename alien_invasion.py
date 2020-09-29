@@ -60,11 +60,14 @@ class AlienInvasion:
             pygame.image.load('assets/images/back_button.bmp'))
         self.resume_button = Button(self, 
             pygame.image.load('assets/images/resume_button.bmp'))
+        self.ok_button = Button(self, 
+            pygame.image.load('assets/images/ok_button.bmp'))
 
         # Give spacing between buttons.
         self.help_button.rect.y += self.help_button.rect.height + 20
         self.quit_button.rect.y += (self.help_button.rect.height + 20) * 2
         self.resume_button.rect.y -= self.back_button.rect.height + 20
+        self.ok_button.rect.y = self.screen.get_rect().bottom - 250
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -72,7 +75,7 @@ class AlienInvasion:
             self._check_events()
 
             if (self.stats.game_active and not self.stats.game_paused and 
-                not self.stats.help_active):
+                not self.stats.help_active and not self.stats.game_over):
                 self.spaceship.update()
                 self._update_bullets()
                 self._update_aliens()
@@ -95,12 +98,14 @@ class AlienInvasion:
                 self._check_quit_button(mouse_pos)
                 self._check_resume_button(mouse_pos)
                 self._check_back_button(mouse_pos)
+                self._check_ok_button(mouse_pos)
 
     def _check_play_button(self, mouse_pos):
         """Start a new game when the player clicks Play."""
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if (button_clicked and not self.stats.game_active and 
-            not self.stats.game_paused and not self.stats.help_active):
+            not self.stats.game_paused and not self.stats.help_active and 
+            not self.stats.game_over):
             # Reset the game settings.
             self.settings.initialise_dynamic_settings
 
@@ -126,14 +131,16 @@ class AlienInvasion:
         """Show help text when the player clicks Help."""
         button_clicked = self.help_button.rect.collidepoint(mouse_pos)
         if (button_clicked and not self.stats.game_active and 
-            not self.stats.game_paused and not self.stats.help_active):
+            not self.stats.game_paused and not self.stats.help_active and 
+            not self.stats.game_over):
             self.stats.help_active = True
 
     def _check_quit_button(self, mouse_pos):
         """Exit game when the player clicks Quit."""
         button_clicked = self.quit_button.rect.collidepoint(mouse_pos)
         if (button_clicked and not self.stats.game_active and 
-            not self.stats.game_paused and not self.stats.help_active):
+            not self.stats.game_paused and not self.stats.help_active and 
+            not self.stats.game_over):
             # Exit the game.
             sys.exit()
 
@@ -141,23 +148,35 @@ class AlienInvasion:
         """Resume current game when the player clicks Resume."""
         button_clicked = self.resume_button.rect.collidepoint(mouse_pos)
         if (button_clicked and self.stats.game_active 
-            and self.stats.game_paused and not self.stats.help_active):
+            and self.stats.game_paused and not self.stats.help_active and 
+            not self.stats.game_over):
             self.stats.game_paused = False
             # Hide the mouse cursor.
             pygame.mouse.set_visible(False)
 
     def _check_back_button(self, mouse_pos):
-        """Got back to main menu when the player clicks Back."""
+        """Go back to main menu when the player clicks Back."""
         button_clicked = self.back_button.rect.collidepoint(mouse_pos)
         game_paused = (self.stats.game_active and self.stats.game_paused and 
-            not self.stats.help_active)
+            not self.stats.help_active and not self.stats.game_over)
         game_help = (not self.stats.game_active and 
-            not self.stats.game_paused and self.stats.help_active)
+            not self.stats.game_paused and self.stats.help_active and 
+            not self.stats.game_over)
         if button_clicked and (game_paused or game_help):
             self.stats.game_active = False
             self.stats.game_paused = False
             self.stats.help_active = False
 
+    def _check_ok_button(self, mouse_pos):
+        """Go back to main menu when the player clicks Ok."""
+        button_clicked = self.ok_button.rect.collidepoint(mouse_pos)
+        game_over = (self.stats.game_active and not self.stats.game_paused and 
+            not self.stats.help_active and self.stats.game_over)
+        if button_clicked and game_over:
+            self.stats.game_active = False
+            self.stats.game_paused = False
+            self.stats.help_active = False
+            self.stats.game_over = False
 
     def _check_keydown_events(self, event):
         """Respond to keypresses."""
@@ -279,7 +298,7 @@ class AlienInvasion:
 
             # Check to see if the has anymore spaceships left.
             if self.stats.spaceships_left <= 0:
-                 self.stats.game_active = False
+                 self.stats.game_over = True
                  pygame.mouse.set_visible(True)
                  return
 
@@ -322,7 +341,7 @@ class AlienInvasion:
         self.screen.fill(self.settings.bg_colour)
 
         # Draw aliens, ship and score information only if game is active.
-        if self.stats.game_active:
+        if self.stats.game_active and not self.stats.game_over:
             self.spaceship.blitme()
             for bullet in self.bullets.sprites():
                 bullet.draw_bullet()
@@ -333,7 +352,7 @@ class AlienInvasion:
 
         # Draw the play, help and quit button if the game is invactive.
         if (not self.stats.game_active and not self.stats.game_paused and 
-            not self.stats.help_active):
+            not self.stats.help_active and not self.stats.game_over):
             self.title.draw_title()
             self.play_button.draw_button()
             self.help_button.draw_button()
@@ -341,16 +360,25 @@ class AlienInvasion:
 
         # Draw the resume and back button if the game is paused.
         if (self.stats.game_active and self.stats.game_paused and
-            not self.stats.help_active):
+            not self.stats.help_active and not self.stats.game_over):
+
+            # Set position of back button in center of screen.
             self.back_button.rect.center = self.screen.get_rect().center
             self.back_button.draw_button()
             self.resume_button.draw_button()
 
-        # Draw the help text and  button if the game is paused.
+        # Draw user game stats if the game is over.
+        if (self.stats.game_active and not self.stats.game_paused and
+            not self.stats.help_active and self.stats.game_over):
+            self.stats.show_stats()
+            self.ok_button.draw_button()
+
+        # Draw the help text and button if the game is paused.
         if (not self.stats.game_active and not self.stats.game_paused and
-            self.stats.help_active):
+            self.stats.help_active and not self.stats.game_over):
             self.help.show_help()
 
+            # Set position of back button under help text.
             self.back_button.rect.y = (self.help.how_to_text_rects[-1].bottom + 
                 50)
             self.back_button.draw_button()

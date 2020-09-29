@@ -1,7 +1,5 @@
 import pygame.font
 
-from settings import Settings
-
 class Help:
     """Class used to render how to play text as an image."""
 
@@ -12,7 +10,6 @@ class Help:
 
         # Font settings for scoring information.
         self.small_font = pygame.font.Font('assets/fonts/slkscre.ttf', 18)
-        self.medium_font = pygame.font.Font('assets/fonts/slkscre.ttf', 24)
         self.large_font = pygame.font.Font('assets/fonts/slkscre.ttf', 36)
 
         # Prepare help text.

@@ -1,7 +1,5 @@
 import pygame.font
 
-from settings import Settings
-
 class GameTitle:
     """Class used to render the game title: Alien Invasion."""
 
