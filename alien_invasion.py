@@ -41,15 +41,20 @@ class AlienInvasion:
 
         self._create_fleet()
 
-        # Make the Play button.
-        self.play_button = Button(self, "Play")
+        # Make buttons.
+        self.play_button = Button(self, 
+            pygame.image.load('assets/images/play_button.bmp'))
+        self.help_button = Button(self, 
+            pygame.image.load('assets/images/help_button.bmp'))
+        self.resume_button = Button(self, 
+            pygame.image.load('assets/images/resume_button.bmp'))
 
     def run_game(self):
         """Start the main loop for the game."""
         while True:
             self._check_events()
 
-            if self.stats.game_active:
+            if self.stats.game_active and not self.stats.game_paused:
                 self.spaceship.update()
                 self._update_bullets()
                 self._update_aliens()
@@ -68,11 +73,13 @@ class AlienInvasion:
             elif event.type == pygame.MOUSEBUTTONUP:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_play_button(mouse_pos)
+                self._check_resume_button(mouse_pos)
 
     def _check_play_button(self, mouse_pos):
         """Start a new game when the player clicks Play."""
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
-        if button_clicked and not self.stats.game_active:
+        if (button_clicked and not self.stats.game_active and 
+            not self.stats.game_paused):
             # Reset the game settings.
             self.settings.initialise_dynamic_settings
 
@@ -91,7 +98,15 @@ class AlienInvasion:
             self._create_fleet()
             self.spaceship.center_spaceship()
 
-            # Hide  the mouse cursor.
+            # Hide the mouse cursor.
+            pygame.mouse.set_visible(False)
+
+    def _check_resume_button(self, mouse_pos):
+        """Start a new game when the player clicks Play."""
+        button_clicked = self.resume_button.rect.collidepoint(mouse_pos)
+        if button_clicked and self.stats.game_active and self.stats.game_paused:
+            self.stats.game_paused = False
+            # Hide the mouse cursor.
             pygame.mouse.set_visible(False)
 
     def _check_keydown_events(self, event):
@@ -106,6 +121,10 @@ class AlienInvasion:
             sys.exit()
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
+        elif event.key == pygame.K_p:
+            self.stats.game_paused = True
+            # Show the mouse cursor.
+            pygame.mouse.set_visible(True)
 
     def _check_keyup_events(self, event):
         """Respond to key releases."""
@@ -257,9 +276,13 @@ class AlienInvasion:
         # Draw the score information.
         self.sb.show_score()
 
-        # Draw the play button if the gam is invactive.
+        # Draw the play button if the game is invactive.
         if not self.stats.game_active:
             self.play_button.draw_button()
+
+        # Draw the resume button if the game is paused.
+        if self.stats.game_paused:
+            self.resume_button.draw_button()
 
         # Make the most recently drawn screen visible.
         pygame.display.flip()

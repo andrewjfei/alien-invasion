@@ -9,12 +9,16 @@ class GameStats:
         # Start Alien Invasion in an inactive state.
         self.game_active = False
 
+        # Make sure game is initially paused (e.g. not running).
+        self.game_paused = False
+
         # High score should never be reset.
         self.high_score = 0
 
         filename = 'high_score.txt'
 
-        with open(filename, 'r+') as file:
+        with open(filename, 'a+') as file:
+            file.seek(0)
             high_score_str = file.read()
             if high_score_str:
                 self.high_score = int(high_score_str)
