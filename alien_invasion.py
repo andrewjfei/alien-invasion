@@ -1,8 +1,8 @@
 import sys
-from threading import Timer
 
 import pygame
 
+from resumable_timer import ResumableTimer
 from settings import Settings
 from game_stats import GameStats
 from scoreboard import Scoreboard
@@ -82,7 +82,7 @@ class AlienInvasion:
         """Start the main loop for the game."""
         while True:
             self._check_events()
-            # self._check_timer()
+            self._check_timer()
 
             if (self.stats.game_active and not self.stats.game_paused and 
                 not self.stats.help_active and not self.stats.game_over):
@@ -146,7 +146,7 @@ class AlienInvasion:
         """Show help text when the player clicks Help."""
         button_clicked = self.help_button.rect.collidepoint(mouse_pos)
         if (button_clicked and not self.stats.game_active and 
-            not self.stats.game_paused and not self.stats.help_active and 
+            not self.stat.game_paused and not self.stats.help_active and 
             not self.stats.game_over):
             self.stats.help_active = True
 
@@ -165,6 +165,10 @@ class AlienInvasion:
         if (button_clicked and self.stats.game_active 
             and self.stats.game_paused and not self.stats.help_active and 
             not self.stats.game_over):
+
+            if hasattr(self, 'timer'):
+                if (self.timer != None and not self.timer.active):
+                    self.timer.resume()
             self.stats.game_paused = False
             # Hide the mouse cursor.
             pygame.mouse.set_visible(False)
@@ -225,13 +229,11 @@ class AlienInvasion:
         elif event.key == pygame.K_LEFT:
             self.spaceship.moving_left = False
 
-    # def _check_timer(self):
-    #     if hasattr(self, 'timer'):
-    #         if self.stats.game_paused:
-    #             print('is paused')
-    #             self.timer.pause()
-    #         else:
-    #             self.timer.resume()
+    def _check_timer(self):
+        if hasattr(self, 'timer'):
+            if (self.timer != None and self.stats.game_paused and 
+                self.timer.active):
+                self.timer.pause()
 
     def _create_wave(self):
         """Create the wave of aliens."""
@@ -324,7 +326,7 @@ class AlienInvasion:
             self.stats.incoming_wave = True
 
             # Create timer to use when waiting for incoming wave of aliens.
-            self.timer = Timer(1.0, self._incoming_wave)
+            self.timer = ResumableTimer(1.0, self._incoming_wave)
             self.timer.start()
 
     def _spaceship_hit(self):
@@ -355,14 +357,16 @@ class AlienInvasion:
     def _check_get_ready_counter(self):
         if self.stats.get_ready_counter > 0:
             self.stats.get_ready_counter -= 1
-            self.timer = Timer(1.0, self._check_get_ready_counter)
+            self.timer = ResumableTimer(1.0, self._check_get_ready_counter)
             self.timer.start()
         else:
             self.stats.get_ready = False
             self.stats.reset_counter()
+            self.timer = None
 
     def _incoming_wave(self):
         self.stats.incoming_wave = False
+        self.timer = None
 
     def _check_aliens_bottom(self):
         """Check if any aliens have reached the bottom of the screen."""
