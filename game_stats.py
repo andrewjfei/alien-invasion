@@ -13,6 +13,12 @@ class GameStats:
         # Start Alien Invasion in an inactive state.
         self.game_active = False
 
+        # Initially set get ready to false.
+        self.get_ready = False
+
+        # Counter used to for count down before the game starts.
+        self.get_ready_counter = 3
+
         # Set incoming wave of aliens initially to false.
         self.incoming_wave = False
 
@@ -35,6 +41,9 @@ class GameStats:
             high_score_str = file.read()
             if high_score_str:
                 self.high_score = int(high_score_str)
+
+    def reset_counter(self):
+        self.get_ready_counter = 3
 
     def reset_stats(self):
         """Initialise statistics that can change during the game."""

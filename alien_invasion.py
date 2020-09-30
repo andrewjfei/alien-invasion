@@ -74,12 +74,15 @@ class AlienInvasion:
         self.ok_button.rect.y = self.screen.get_rect().bottom - 250
 
         # Create texts used in the game.
-        self.incoming_wave_text = Text(self, 'Incoming Wave...')
+        self.get_ready_text = Text(self, 'Get Ready...', 24)
+        self.get_ready_text.text_rect.y -= 48
+        self.incoming_wave_text = Text(self, 'Incoming Wave...', 36)
 
     def run_game(self):
         """Start the main loop for the game."""
         while True:
             self._check_events()
+            # self._check_timer()
 
             if (self.stats.game_active and not self.stats.game_paused and 
                 not self.stats.help_active and not self.stats.game_over):
@@ -134,6 +137,10 @@ class AlienInvasion:
 
             # Hide the mouse cursor.
             pygame.mouse.set_visible(False)
+
+            # Show get ready text.
+            self.stats.get_ready = True
+            self._check_get_ready_counter()
 
     def _check_help_button(self, mouse_pos):
         """Show help text when the player clicks Help."""
@@ -204,7 +211,7 @@ class AlienInvasion:
         elif event.key == pygame.K_q:
             sys.exit()
         elif (event.key == pygame.K_SPACE and self.stats.game_active and 
-            not self.stats.incoming_wave):
+            not self.stats.get_ready and not self.stats.incoming_wave):
             self._fire_bullet()
         elif event.key == pygame.K_p and self.stats.game_active:
             self.stats.game_paused = True
@@ -217,6 +224,14 @@ class AlienInvasion:
             self.spaceship.moving_right = False
         elif event.key == pygame.K_LEFT:
             self.spaceship.moving_left = False
+
+    # def _check_timer(self):
+    #     if hasattr(self, 'timer'):
+    #         if self.stats.game_paused:
+    #             print('is paused')
+    #             self.timer.pause()
+    #         else:
+    #             self.timer.resume()
 
     def _create_wave(self):
         """Create the wave of aliens."""
@@ -333,12 +348,18 @@ class AlienInvasion:
             self._create_wave()
             self.spaceship.center_spaceship()
 
-            # Pause to allow player to get ready.
-            self.stats.incoming_wave = True
-
             # Create timer to use when waiting for incoming wave of aliens.
-            self.timer = Timer(1.0, self._incoming_wave)
+            self.stats.get_ready = True
+            self._check_get_ready_counter()
+
+    def _check_get_ready_counter(self):
+        if self.stats.get_ready_counter > 0:
+            self.stats.get_ready_counter -= 1
+            self.timer = Timer(1.0, self._check_get_ready_counter)
             self.timer.start()
+        else:
+            self.stats.get_ready = False
+            self.stats.reset_counter()
 
     def _incoming_wave(self):
         self.stats.incoming_wave = False
@@ -379,14 +400,26 @@ class AlienInvasion:
             # Draw the score information.
             self.sb.show_score()
 
+        # Draw get ready text.
+        if (self.stats.game_active and not self.stats.game_over and 
+            self.stats.get_ready and not self.stats.incoming_wave):
+            self.get_ready_text.draw_text()
+
+            # Create count to show on screen.
+            count = str(self.stats.get_ready_counter + 1)
+            self.counter_text = Text(self, count, 48)
+
+            # Draw count.
+            self.counter_text.draw_text()
+
         # Draw incoming wave text.
         if (self.stats.game_active and not self.stats.game_over and 
-            self.stats.incoming_wave):
+            not self.stats.get_ready and self.stats.incoming_wave):
             self.incoming_wave_text.draw_text()
 
         # Draw aliens.
-        if (self.stats.game_active and not self.stats.game_over and 
-            not self.stats.incoming_wave):
+        if (self.stats.game_active and not self.stats.game_over and
+            not self.stats.get_ready and not self.stats.incoming_wave):
             self.aliens.draw(self.screen)
 
         # Draw the play, help and quit button if the game is invactive.
