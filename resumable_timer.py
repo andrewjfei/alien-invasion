@@ -5,21 +5,27 @@ class ResumableTimer:
     """A timer which can be paused and resumed again."""
 
     def __init__(self, timeout, callback):
+        """Initialise resumable timer attributes."""
         self.timeout = timeout
         self.callback = callback
         self.timer = Timer(self.timeout, self.callback)
         self.active = False
 
     def start(self):
-        self.timer.start()
-        self.active = True
-        self.start_time = time.time()
+        """Start the timer, set timer to active and record the current time."""
+        if not self.active:
+            self.timer.start()
+            self.active = True
+            self.start_time = time.time()
 
     def cancel(self):
-        self.timer.cancel()
-        self.active = False
+        """Stop the timer and set the timer to not active."""
+        if self.active:
+            self.timer.cancel()
+            self.active = False
 
     def pause(self):
+        """Cancel timer and record pause time to determine new timeout."""
         if self.active:
             self.timer.cancel()
             self.active = False
@@ -27,6 +33,7 @@ class ResumableTimer:
             self._calculate_remaining_time()
 
     def resume(self):
+        """Create new Timer but use the updated timeout."""
         if not self.active:
             self.timer = Timer(self.timeout, self.callback)
             self.timer.start()
@@ -34,5 +41,6 @@ class ResumableTimer:
             self.start_time = time.time()
 
     def _calculate_remaining_time(self):
-         self.timeout = self.timeout - (self.pause_time - 
+        """Calculate the remaining timeout from when the timer was paused."""
+        self.timeout = self.timeout - (self.pause_time - 
             self.start_time)

@@ -88,7 +88,11 @@ class AlienInvasion:
                 not self.stats.help_active and not self.stats.game_over):
                 self.spaceship.update()
                 self._update_bullets()
-                self._update_aliens()
+
+                # Make sure aliens aren't updated when prep text is being shown
+                # to the user.
+                if not self.stats.get_ready and not self.stats.incoming_wave:
+                    self._update_aliens()
 
             self._update_screen()
 
@@ -146,7 +150,7 @@ class AlienInvasion:
         """Show help text when the player clicks Help."""
         button_clicked = self.help_button.rect.collidepoint(mouse_pos)
         if (button_clicked and not self.stats.game_active and 
-            not self.stat.game_paused and not self.stats.help_active and 
+            not self.stats.game_paused and not self.stats.help_active and 
             not self.stats.game_over):
             self.stats.help_active = True
 
@@ -230,6 +234,9 @@ class AlienInvasion:
             self.spaceship.moving_left = False
 
     def _check_timer(self):
+        """
+        Check whether there are any threads being used that need to be paused.
+        """
         if hasattr(self, 'timer'):
             if (self.timer != None and self.stats.game_paused and 
                 self.timer.active):
