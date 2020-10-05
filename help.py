@@ -7,10 +7,13 @@ class Help:
         self.screen = ai_game.screen
         self.screen_rect = self.screen.get_rect()
         self.settings = ai_game.settings
+        self.finder = ai_game.finder
 
         # Font settings for scoring information.
-        self.small_font = pygame.font.Font('assets/fonts/slkscre.ttf', 18)
-        self.large_font = pygame.font.Font('assets/fonts/slkscre.ttf', 36)
+        self.small_font = pygame.font.Font(self.finder.find_data_file(
+            'silkscreen.ttf', 'fonts'), 18)
+        self.large_font = pygame.font.Font(self.finder.find_data_file(
+            'silkscreen.ttf', 'fonts'), 36)
 
         # Prepare help text.
         self._prep_help_title()

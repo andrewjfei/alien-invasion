@@ -7,9 +7,11 @@ class GameTitle:
         self.screen = ai_game.screen
         self.screen_rect = self.screen.get_rect()
         self.settings = ai_game.settings
+        self.finder = ai_game.finder
         self.title = self.settings.title
 
-        self.font = pygame.font.Font('assets/fonts/slkscre.ttf', 60)
+        self.font = pygame.font.Font(self.finder.find_data_file(
+            'silkscreen.ttf', 'fonts'), 60)
 
         self.title_image = self.font.render(self.title, True, 
             self.settings.text_colour, self.settings.bg_colour)

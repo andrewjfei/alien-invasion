@@ -7,8 +7,10 @@ class Text:
         self.screen = ai_game.screen
         self.screen_rect = self.screen.get_rect()
         self.settings = ai_game.settings
+        self.finder = ai_game.finder
 
-        self.font = pygame.font.Font('assets/fonts/slkscre.ttf', size)
+        self.font = pygame.font.Font(self.finder.find_data_file(
+            'silkscreen.ttf', 'fonts'), size)
 
         self.text_image = self.font.render(text, True, 
             self.settings.text_colour, self.settings.bg_colour)

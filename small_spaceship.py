@@ -9,8 +9,10 @@ class SmallSpaceship(Sprite):
         super().__init__()
         self.screen = ai_game.screen
         self.settings = ai_game.settings
+        self.finder = ai_game.finder
         self.screen_rect = ai_game.screen.get_rect()
 
         # Load the small spaceship image and get its rect.
-        self.image = pygame.image.load('assets/images/small_spaceship.bmp')
+        self.image = pygame.image.load(self.finder.find_data_file(
+            'small_spaceship.bmp', 'images'))
         self.rect = self.image.get_rect()

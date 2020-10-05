@@ -8,6 +8,7 @@ class GameStats:
         self.screen = ai_game.screen
         self.screen_rect = self.screen.get_rect()
         self.settings = ai_game.settings
+        self.finder = ai_game.finder
         self.reset_stats()
 
         # Start Alien Invasion in an inactive state.
@@ -139,8 +140,10 @@ class GameStats:
     def show_stats(self):
         """Draws the users score for the game onto the screen."""
         # Font settings for scoring information.
-        self.small_font = pygame.font.Font('assets/fonts/slkscre.ttf', 24)
-        self.large_font = pygame.font.Font('assets/fonts/slkscre.ttf', 48)
+        self.small_font = pygame.font.Font(self.finder.find_data_file(
+            'silkscreen.ttf', 'fonts'), 24)
+        self.large_font = pygame.font.Font(self.finder.find_data_file(
+            'silkscreen.ttf', 'fonts'), 48)
 
         # Prepare stats to draw onto screen.
         self._prep_stats()

@@ -12,12 +12,16 @@ class Scoreboard:
         self.screen = ai_game.screen
         self.screen_rect = self.screen.get_rect()
         self.settings = ai_game.settings
+        self.finder = ai_game.finder
         self.stats = ai_game.stats
 
         # Font settings for scoring information.
-        self.small_font = pygame.font.Font('assets/fonts/slkscre.ttf', 16)
-        self.medium_font = pygame.font.Font('assets/fonts/slkscre.ttf', 24)
-        self.large_font = pygame.font.Font('assets/fonts/slkscre.ttf', 36)
+        self.small_font = pygame.font.Font(self.finder.find_data_file(
+            'silkscreen.ttf', 'fonts'), 16)
+        self.medium_font = pygame.font.Font(self.finder.find_data_file(
+            'silkscreen.ttf', 'fonts'), 24)
+        self.large_font = pygame.font.Font(self.finder.find_data_file(
+            'silkscreen.ttf', 'fonts'), 36)
 
         # Prepare the initial score images.
         self.prep_score()

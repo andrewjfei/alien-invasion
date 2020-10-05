@@ -3,6 +3,7 @@ import sys
 import pygame
 
 from resumable_timer import ResumableTimer
+from data_file_finder import DataFileFinder
 from settings import Settings
 from game_stats import GameStats
 from scoreboard import Scoreboard
@@ -21,6 +22,7 @@ class AlienInvasion:
         """Initialise the game, and create game resources."""
         pygame.init()
         self.settings = Settings()
+        self.finder = DataFileFinder()
 
         # Uncomment code to run Alien Invasion in full screen mode.
         # self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -52,19 +54,26 @@ class AlienInvasion:
 
         # Make buttons.
         self.play_button = Button(self, 
-            pygame.image.load('assets/images/play_button.bmp'))
+            pygame.image.load(self.finder.find_data_file('play_button.bmp', 
+                'images')))
         self.help_button = Button(self, 
-            pygame.image.load('assets/images/help_button.bmp'))
+            pygame.image.load(self.finder.find_data_file('help_button.bmp', 
+                'images')))
         self.exit_button = Button(self, 
-            pygame.image.load('assets/images/exit_button.bmp'))
+            pygame.image.load(self.finder.find_data_file('exit_button.bmp', 
+                'images')))
         self.resume_button = Button(self, 
-            pygame.image.load('assets/images/resume_button.bmp'))
+            pygame.image.load(self.finder.find_data_file('resume_button.bmp', 
+                'images')))
         self.quit_button = Button(self, 
-            pygame.image.load('assets/images/quit_button.bmp'))
+            pygame.image.load(self.finder.find_data_file('quit_button.bmp', 
+                'images')))
         self.back_button = Button(self, 
-            pygame.image.load('assets/images/back_button.bmp'))
+            pygame.image.load(self.finder.find_data_file('back_button.bmp', 
+                'images')))
         self.ok_button = Button(self, 
-            pygame.image.load('assets/images/ok_button.bmp'))
+            pygame.image.load(self.finder.find_data_file('ok_button.bmp', 
+                'images')))
 
         # Give spacing between buttons.
         self.help_button.rect.y += self.help_button.rect.height + 20
